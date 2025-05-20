@@ -1,33 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Divinci CodeLab</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
-
-<div class="topbar">
+<header>
   <h1>Divinci CodeLab</h1>
-  <div class="buttons">
-    <button id="darkModeBtn">🌙</button>
+  <div class="controls">
+    <button id="toggleTheme">🌓</button>
     <button id="resetBtn">Reset</button>
     <button id="exportBtn">Export</button>
   </div>
+</header>
+
+<div class="editor-grid">
+  <div class="editor-block">
+    <label>HTML</label>
+    <div class="lined">
+      <textarea id="htmlEditor" placeholder="HTML"></textarea>
+      <div class="lines" id="htmlLines"></div>
+    </div>
+  </div>
+  <div class="editor-block">
+    <label>CSS</label>
+    <div class="lined">
+      <textarea id="cssEditor" placeholder="CSS"></textarea>
+      <div class="lines" id="cssLines"></div>
+    </div>
+  </div>
+  <div class="editor-block">
+    <label>JS</label>
+    <div class="lined">
+      <textarea id="jsEditor" placeholder="JS"></textarea>
+      <div class="lines" id="jsLines"></div>
+    </div>
+  </div>
 </div>
 
-<div class="main">
-  <div class="editors">
-    <textarea id="html" placeholder="HTML"></textarea>
-    <textarea id="css" placeholder="CSS"></textarea>
-    <textarea id="js" placeholder="JS"></textarea>
-  </div>
-  <div class="preview">
-    <iframe id="preview"></iframe>
-  </div>
-</div>
+<iframe id="output"></iframe>
 
 <script src="script.js"></script>
 </body>

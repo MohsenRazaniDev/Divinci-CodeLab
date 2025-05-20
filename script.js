@@ -1,80 +1,96 @@
-const htmlEditor = document.getElementById("html");
-const cssEditor = document.getElementById("css");
-const jsEditor = document.getElementById("js");
-const previewFrame = document.getElementById("preview");
+const htmlEditor = document.getElementById('htmlEditor');
+const cssEditor = document.getElementById('cssEditor');
+const jsEditor = document.getElementById('jsEditor');
+const outputFrame = document.getElementById('output');
+const resetBtn = document.getElementById('resetBtn');
+const exportBtn = document.getElementById('exportBtn');
+const themeToggle = document.getElementById('toggleTheme');
 
-const darkModeBtn = document.getElementById("darkModeBtn");
-const exportBtn = document.getElementById("exportBtn");
-const resetBtn = document.getElementById("resetBtn");
-
+// Live preview
 function updateOutput() {
     const html = htmlEditor.value;
-    const css = cssEditor.value;
-    const js = jsEditor.value;
-
-    const fullCode = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <style>${css}</style>
-    </head>
-    <body>
-      ${html}
-      <script>${js.replace(/<\/script>/g, '<\\/script>')}</script>
-    </body>
-    </html>
+    const css = `<style>${cssEditor.value}</style>`;
+    const js = `<script>${jsEditor.value}<\/script>`;
+    outputFrame.srcdoc = `
+    <!DOCTYPE html><html><head>${css}</head><body>${html}${js}</body></html>
   `;
 
-    previewFrame.srcdoc = fullCode;
+    localStorage.setItem('htmlCode', html);
+    localStorage.setItem('cssCode', cssEditor.value);
+    localStorage.setItem('jsCode', jsEditor.value);
 }
 
-// Event listeners for live updates
-htmlEditor.addEventListener("input", updateOutput);
-cssEditor.addEventListener("input", updateOutput);
-jsEditor.addEventListener("input", updateOutput);
+// Restore saved code
+function restoreFromStorage() {
+    htmlEditor.value = localStorage.getItem('htmlCode') || '';
+    cssEditor.value = localStorage.getItem('cssCode') || '';
+    jsEditor.value = localStorage.getItem('jsCode') || '';
+    updateOutput();
+}
 
-// Dark mode toggle
-darkModeBtn.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-});
+// Reset editors
+function resetEditors() {
+    htmlEditor.value = '';
+    cssEditor.value = '';
+    jsEditor.value = '';
+    updateOutput();
+}
 
 // Export to ZIP
-exportBtn.addEventListener("click", () => {
+function exportProject() {
     const zip = new JSZip();
-    const finalHTML = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <title>Exported Code</title>
-      <style>${cssEditor.value}</style>
-    </head>
-    <body>
-      ${htmlEditor.value}
-      <script>${jsEditor.value.replace(/<\/script>/g, '<\\/script>')}</script>
-    </body>
-    </html>
-  `.trim();
-
-    zip.file("index.html", finalHTML);
-    zip.generateAsync({ type: "blob" }).then(content => {
-        const a = document.createElement("a");
+    zip.file('index.html', htmlEditor.value);
+    zip.file('style.css', cssEditor.value);
+    zip.file('script.js', jsEditor.value);
+    zip.generateAsync({ type: 'blob' }).then(content => {
+        const a = document.createElement('a');
         a.href = URL.createObjectURL(content);
-        a.download = "divinci-codelab.zip";
+        a.download = 'divinci-codelab.zip';
         a.click();
+    });
+}
+
+// Theme toggle
+function toggleTheme() {
+    const root = document.documentElement;
+    const theme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+}
+
+function restoreTheme() {
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+}
+
+// Line numbers
+function updateLineNumbers(editor, lineEl) {
+    const lines = editor.value.split('\n').length;
+    lineEl.innerHTML = '';
+    for (let i = 1; i <= lines; i++) {
+        lineEl.innerHTML += i + '<br>';
+    }
+}
+
+// Events
+[htmlEditor, cssEditor, jsEditor].forEach((editor, index) => {
+    const lineEl = document.getElementById(`${editor.id.replace('Editor', 'Lines')}`);
+    editor.addEventListener('input', () => {
+        updateOutput();
+        updateLineNumbers(editor, lineEl);
+    });
+    editor.addEventListener('scroll', () => {
+        lineEl.scrollTop = editor.scrollTop;
     });
 });
 
-// Reset all editors
-resetBtn.addEventListener("click", () => {
-    if (confirm("Clear all code?")) {
-        htmlEditor.value = "";
-        cssEditor.value = "";
-        jsEditor.value = "";
-        updateOutput();
-    }
-});
+resetBtn.addEventListener('click', resetEditors);
+exportBtn.addEventListener('click', exportProject);
+themeToggle.addEventListener('click', toggleTheme);
 
-// Initial render
-updateOutput();
+// Init
+restoreFromStorage();
+restoreTheme();
+updateLineNumbers(htmlEditor, document.getElementById('htmlLines'));
+updateLineNumbers(cssEditor, document.getElementById('cssLines'));
+updateLineNumbers(jsEditor, document.getElementById('jsLines'));
