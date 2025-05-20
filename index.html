@@ -2,38 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Divinci CodeLab</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
-<header>
-  <h1>Divinci CodeLab</h1>
-  <div class="controls">
-    <button id="darkModeToggle">Dark Mode</button>
-    <button id="exportBtn">Export ZIP</button>
-  </div>
-</header>
-<main>
-  <section class="editors">
-    <div class="editor-panel">
-      <h2>HTML</h2>
-      <textarea id="htmlEditor" placeholder="Write HTML code here..."></textarea>
-    </div>
-    <div class="editor-panel">
-      <h2>CSS</h2>
-      <textarea id="cssEditor" placeholder="Write CSS code here..."></textarea>
-    </div>
-    <div class="editor-panel">
-      <h2>JavaScript</h2>
-      <textarea id="jsEditor" placeholder="Write JavaScript code here..."></textarea>
-    </div>
-  </section>
-  <section class="output">
-    <iframe id="outputFrame"></iframe>
 
-  </section>
-</main>
+<div class="topbar">
+  <h1>Divinci CodeLab</h1>
+  <div class="buttons">
+    <button id="darkModeBtn">🌙</button>
+    <button id="resetBtn">Reset</button>
+    <button id="exportBtn">Export</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="editors">
+    <textarea id="html" placeholder="HTML"></textarea>
+    <textarea id="css" placeholder="CSS"></textarea>
+    <textarea id="js" placeholder="JS"></textarea>
+  </div>
+  <div class="preview">
+    <iframe id="preview"></iframe>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>
